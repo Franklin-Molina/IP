@@ -82,6 +82,7 @@ def register_visit(
     network_info: str | None = None,
     cookies: str | None = None,
     extra_params: str | None = None,
+    device_info: str | None = None,
 ) -> Visit:
     """
     Registra una visita a una URL acortada.
@@ -95,6 +96,7 @@ def register_visit(
         network_info (str | None): Información de red (JSON o texto).
         cookies (str | None): Cookies (JSON o texto).
         extra_params (str | None): Parámetros adicionales (JSON o texto).
+        device_info (str | None): Sistema operativo y navegador.
 
     Returns:
         Visit: Objeto visita creada.
@@ -107,6 +109,7 @@ def register_visit(
         network_info=network_info,
         cookies=cookies,
         extra_params=extra_params,
+        device_info=device_info,
     )
     db.add(visit)
     db.commit()

@@ -5,7 +5,61 @@ from app.crud.url import create_short_url, get_url_by_code, register_visit
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 
+from fastapi.responses import RedirectResponse
+
 router = APIRouter()
+
+@router.get("/")
+def root():
+    """
+    Redirige a la interfaz principal.
+    """
+    return RedirectResponse(url="/static/index.html")
+
+
+def infer_device_info(user_agent: str | None) -> str:
+    """
+    Inferir sistema operativo y navegador a partir del User-Agent.
+
+    Args:
+        user_agent (str | None): Cadena User-Agent.
+
+    Returns:
+        str: Descripción del dispositivo, ej. "Windows 10 - Chrome".
+    """
+    if not user_agent:
+        return "Desconocido"
+
+    ua = user_agent.lower()
+    # Sistema operativo
+    if "windows" in ua:
+        os = "Windows"
+    elif "mac os" in ua or "macintosh" in ua:
+        os = "MacOS"
+    elif "linux" in ua:
+        os = "Linux"
+    elif "android" in ua:
+        os = "Android"
+    elif "iphone" in ua or "ipad" in ua:
+        os = "iOS"
+    else:
+        os = "Otro"
+
+    # Navegador
+    if "chrome" in ua and "safari" in ua:
+        browser = "Chrome"
+    elif "firefox" in ua:
+        browser = "Firefox"
+    elif "safari" in ua and "chrome" not in ua:
+        browser = "Safari"
+    elif "edge" in ua:
+        browser = "Edge"
+    elif "opera" in ua or "opr" in ua:
+        browser = "Opera"
+    else:
+        browser = "Otro"
+
+    return f"{os} - {browser}"
 
 class URLRequest(BaseModel):
     url: str
@@ -53,6 +107,8 @@ def redirect_url(short_code: str, request: Request, db: Session = Depends(get_db
         "vpn": "desconocido"
     }, ensure_ascii=False)
 
+    device_info = infer_device_info(user_agent)
+
     register_visit(
         db,
         url_obj.id,
@@ -62,6 +118,7 @@ def redirect_url(short_code: str, request: Request, db: Session = Depends(get_db
         network_info=network_info,
         cookies=cookies_json,
         extra_params=params_json,
+        device_info=device_info,
     )
 
     return RedirectResponse(url=url_obj.original_url)
@@ -77,7 +134,16 @@ def url_stats(short_code: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="URL no encontrada")
 
     visits = [
-        {"ip_address": visit.ip_address, "timestamp": visit.timestamp.isoformat()}
+        {
+            "ip_address": visit.ip_address,
+            "timestamp": visit.timestamp.isoformat(),
+            "user_agent": visit.user_agent,
+            "referrer": visit.referrer,
+            "network_info": visit.network_info,
+            "cookies": visit.cookies,
+            "extra_params": visit.extra_params,
+            "device_info": visit.device_info,
+        }
         for visit in url_obj.visits
     ]
     return {

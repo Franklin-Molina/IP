@@ -17,6 +17,7 @@ class Visit(Base):
     network_info = Column(Text, nullable=True)  # JSON o texto con info de red
     cookies = Column(Text, nullable=True)       # JSON o texto con cookies
     extra_params = Column(Text, nullable=True)  # JSON o texto con parámetros adicionales
+    device_info = Column(String(256), nullable=True)  # Sistema operativo y navegador
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
 
     url = relationship("URL", backref="visits")
