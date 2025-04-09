@@ -1,0 +1,22 @@
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text
+from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
+from app.core.database import Base
+
+class Visit(Base):
+    """
+    Modelo para representar una visita a una URL acortada.
+    """
+    __tablename__ = "visits"
+
+    id = Column(Integer, primary_key=True, index=True)
+    url_id = Column(Integer, ForeignKey("urls.id"))
+    ip_address = Column(String)
+    user_agent = Column(String(512), nullable=True)
+    referrer = Column(String(512), nullable=True)
+    network_info = Column(Text, nullable=True)  # JSON o texto con info de red
+    cookies = Column(Text, nullable=True)       # JSON o texto con cookies
+    extra_params = Column(Text, nullable=True)  # JSON o texto con parámetros adicionales
+    timestamp = Column(DateTime(timezone=True), server_default=func.now())
+
+    url = relationship("URL", backref="visits")
