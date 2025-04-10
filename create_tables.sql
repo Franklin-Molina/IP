@@ -1,20 +1,14 @@
 CREATE TABLE urls (
     id SERIAL PRIMARY KEY,
-    original_url VARCHAR NOT NULL,
-    short_code VARCHAR NOT NULL UNIQUE,
-    created_at TIMESTAMP
-);
-
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR NOT NULL UNIQUE,
-    hashed_password VARCHAR NOT NULL
+    original_url TEXT NOT NULL,
+    short_code TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE visits (
     id SERIAL PRIMARY KEY,
-    url_id INTEGER,
-    ip_address VARCHAR,
+    url_id INTEGER REFERENCES urls(id),
+    ip_address TEXT,
     user_agent VARCHAR(512),
     referrer VARCHAR(512),
     network_info TEXT,
@@ -24,6 +18,5 @@ CREATE TABLE visits (
     latitude VARCHAR(20),
     longitude VARCHAR(20),
     isp VARCHAR(256),
-    timestamp TIMESTAMP,
-    FOREIGN KEY (url_id) REFERENCES urls(id)
+    timestamp TIMESTAMPTZ DEFAULT NOW()
 );
