@@ -114,3 +114,4 @@ pip install wtforms
 
 - [x] 09/04/2025 - Ejecutar el proyecto dentro del entorno virtual (crear, instalar dependencias y correr servidor)
 - [ ] 09/04/2025 - Ampliar la captura de detalles de visitas para incluir información de red (tipo de conexión, proxy, VPN), agente de usuario detallado, cookies y parámetros adicionales si se usan scripts complejos.
+- [ ] 10/04/2025 - Configurar correctamente la cadena `DATABASE_URL` con la URL PostgreSQL de Supabase para que los datos se almacenen allí y no en SQLite local.
