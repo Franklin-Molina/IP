@@ -1,7 +1,10 @@
-fastapi
-uvicorn
-sqlalchemy
-httpx
+flask
+flask-sqlalchemy
 python-dotenv
+wtforms
+flask-login
 pydantic
+pydantic-ai
+httpx
+logfire
 PyJWT
