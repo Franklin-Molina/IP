@@ -1,9 +1,13 @@
 import random
 import string
+import requests
+import json
+import os
 from sqlalchemy.orm import Session
 from app.models.url import URL
 from app.models.visit import Visit
 from urllib.parse import urlparse
+from app.core.database import IPINFO_API_KEY
 
 def generate_short_code(length: int = 6) -> str:
     """
@@ -81,8 +85,8 @@ def register_visit(
     referrer: str | None = None,
     network_info: str | None = None,
     cookies: str | None = None,
-    extra_params: str | None = None,
-    device_info: str | None = None,
+        extra_params: str | None = None,
+        device_info: str | None = None,
 ) -> Visit:
     """
     Registra una visita a una URL acortada.
@@ -101,6 +105,22 @@ def register_visit(
     Returns:
         Visit: Objeto visita creada.
     """
+    latitude = None
+    longitude = None
+    isp = None
+
+    if IPINFO_API_KEY:
+        try:
+            url = f"https://ipinfo.io/{ip_address}?token={IPINFO_API_KEY}"
+            response = requests.get(url)
+            data = response.json()
+            loc = data.get("loc")
+            if loc:
+                latitude, longitude = loc.split(",")
+            isp = data.get("org")
+        except Exception as e:
+            print(f"Error al obtener geolocalización: {e}")
+
     visit = Visit(
         url_id=url_id,
         ip_address=ip_address,
@@ -110,6 +130,9 @@ def register_visit(
         cookies=cookies,
         extra_params=extra_params,
         device_info=device_info,
+        latitude=latitude,
+        longitude=longitude,
+        isp=isp,
     )
     db.add(visit)
     db.commit()

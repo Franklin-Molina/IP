@@ -18,6 +18,9 @@ class Visit(Base):
     cookies = Column(Text, nullable=True)       # JSON o texto con cookies
     extra_params = Column(Text, nullable=True)  # JSON o texto con parámetros adicionales
     device_info = Column(String(256), nullable=True)  # Sistema operativo y navegador
+    latitude = Column(String(20), nullable=True)  # Latitud
+    longitude = Column(String(20), nullable=True)  # Longitud
+    isp = Column(String(256), nullable=True)  # ISP
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
 
     url = relationship("URL", backref="visits")

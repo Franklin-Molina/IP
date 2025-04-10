@@ -1,0 +1,28 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 20px;
+    background-color: #f8f9fa;
+}
+
+h1, h2 {
+    color: #343a40;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+table {
+    margin-top: 1em;
+}
+
+th, td {
+    padding: 0.5em;
+}
+
+/* Limitar el ancho de la columna Info Red */
+th:nth-child(5),
+td:nth-child(5) {
+    max-width: 150px;
+    overflow-x: auto; /* Agregar scroll horizontal */
+    white-space: nowrap; /* Evitar saltos de línea */
+}
+

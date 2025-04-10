@@ -3,59 +3,61 @@
 <head>
     <meta charset="UTF-8" />
     <title>Acortador de URLs</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2em; }
-        h1 { color: #333; }
-        form { margin-bottom: 1em; }
-        input[type="url"] { width: 300px; padding: 0.5em; }
-        button { padding: 0.5em 1em; }
-        #result { margin-top: 1em; }
-        .hidden { display: none; }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Acortador de URLs</h1>
-    <form id="shorten-form">
-        <input type="url" id="url-input" placeholder="Introduce la URL" required />
-        <button type="submit">Acortar</button>
-    </form>
-    <a href="/static/admin.html"><button>Panel de Administración</button></a>
-    <div id="result" class="hidden">
-        <p>Tu URL acortada:</p>
-        <input type="text" id="short-url" readonly style="width: 300px;" />
-        <button id="copy-btn">Copiar</button>
+    <div class="container">
+        <h1>Acortador de URLs</h1>
+        <form id="shorten-form" class="form-inline">
+            <div class="form-group mx-sm-3 mb-2">
+                <input type="url" id="url-input" class="form-control" placeholder="Introduce la URL" required />
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Acortar</button>
+        </form>
+        <a href="/static/admin.html" class="btn btn-secondary mb-2">Panel de Administración</a>
+        <div id="result" class="hidden alert alert-success" role="alert">
+            <p>Tu URL acortada:</p>
+            <div class="input-group">
+                <input type="text" id="short-url" class="form-control" readonly />
+                <div class="input-group-append">
+                    <button id="copy-btn" class="btn btn-outline-secondary" type="button">Copiar</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const form = document.getElementById('shorten-form');
+            const urlInput = document.getElementById('url-input');
+            const resultDiv = document.getElementById('result');
+            const shortUrlInput = document.getElementById('short-url');
+            const copyBtn = document.getElementById('copy-btn');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const url = urlInput.value;
+                try {
+                    const response = await fetch('/api/shorten', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ url })
+                    });
+                    if (!response.ok) throw new Error('Error al acortar la URL');
+                    const data = await response.json();
+                    const shortUrl = `${window.location.origin}/${data.short_code}`;
+                    shortUrlInput.value = shortUrl;
+                    resultDiv.classList.remove('hidden');
+                } catch (error) {
+                    alert(error.message);
+                }
+            });
+
+            copyBtn.addEventListener('click', () => {
+                shortUrlInput.select();
+                document.execCommand('copy');
+            });
+        </script>
     </div>
-
-    <script>
-        const form = document.getElementById('shorten-form');
-        const urlInput = document.getElementById('url-input');
-        const resultDiv = document.getElementById('result');
-        const shortUrlInput = document.getElementById('short-url');
-        const copyBtn = document.getElementById('copy-btn');
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const url = urlInput.value;
-            try {
-                const response = await fetch('/api/shorten', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url })
-                });
-                if (!response.ok) throw new Error('Error al acortar la URL');
-                const data = await response.json();
-                const shortUrl = `${window.location.origin}/${data.short_code}`;
-                shortUrlInput.value = shortUrl;
-                resultDiv.classList.remove('hidden');
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-
-        copyBtn.addEventListener('click', () => {
-            shortUrlInput.select();
-            document.execCommand('copy');
-        });
-    </script>
 </body>
 </html>

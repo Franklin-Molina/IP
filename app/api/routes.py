@@ -143,6 +143,9 @@ def url_stats(short_code: str, db: Session = Depends(get_db)):
             "cookies": visit.cookies,
             "extra_params": visit.extra_params,
             "device_info": visit.device_info,
+            "latitude": visit.latitude,
+            "longitude": visit.longitude,
+            "isp": visit.isp,
         }
         for visit in url_obj.visits
     ]
@@ -169,6 +172,31 @@ def get_user_urls(db: Session = Depends(get_db)):
         })
     return result
 
+
+from fastapi import status
+
+@router.delete("/api/urls/{short_code}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_url(short_code: str, db: Session = Depends(get_db)):
+    """
+    Borra una URL acortada por su código.
+    """
+    url_obj = get_url_by_code(db, short_code)
+    if not url_obj:
+        raise HTTPException(status_code=404, detail="URL no encontrada")
+    db.delete(url_obj)
+    db.commit()
+
+
+@router.delete("/api/urls", status_code=status.HTTP_204_NO_CONTENT)
+def delete_all_urls(db: Session = Depends(get_db)):
+    """
+    Borra todas las URLs acortadas.
+    """
+    from app.models.url import URL
+    urls = db.query(URL).all()
+    for url in urls:
+        db.delete(url)
+    db.commit()
 
 @router.get("/debug/visit-columns")
 def debug_visit_columns():
