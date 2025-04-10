@@ -1,0 +1,79 @@
+# Entornos virtuales y configuraciones de entorno
+venv/
+.env/
+.env.bak/
+*.env
+
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Configuración adicional
+*.sqlite3
+*.db
+*.log
+
+# Archivos temporales y de respaldo
+*.tmp
+*.swp
+*.bak
+
+# Archivos creados por PyInstaller
+*.spec
+*.manifest
+
+# Distribución / Build
+build/
+dist/
+downloads/
+.eggs/
+*.egg-info/
+*.egg
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+develop-eggs/
+parts/
+sdist/
+var/
+lib/
+lib64/
+
+# Informes de testing y cobertura
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDEs y editores comunes
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos y carpetas específicas para captura y logs de visitas
+visit_logs/
+tracking_data/
+instance/
+*.pid
+
+# Traducciones
+*.pot
+*.mo

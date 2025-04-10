@@ -85,8 +85,8 @@ def register_visit(
     referrer: str | None = None,
     network_info: str | None = None,
     cookies: str | None = None,
-        extra_params: str | None = None,
-        device_info: str | None = None,
+    extra_params: str | None = None,
+    device_info: str | None = None,
 ) -> Visit:
     """
     Registra una visita a una URL acortada.
