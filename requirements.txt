@@ -8,3 +8,6 @@ pydantic-ai
 httpx
 logfire
 PyJWT
+fastapi
+uvicorn
+sqlalchemy
